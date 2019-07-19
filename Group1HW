@@ -1,0 +1,32 @@
+import re
+import operator
+t = []
+my_list = []
+
+fp = open('FloridaVoters.html', 'r')
+#using regular expressions to get data from html file
+for i in fp:
+    #find lines with <td> then characters, , . space and other characters
+    line = re.findall('<td>[\w*,\.\s\w*-]+', i)
+    if len(line)!=0:
+        line = line[0].lstrip('<td>')
+        line = line.replace(',', '')
+        #if the line is a number, turn it into an int
+        if line.isdigit() ==True:
+            line = int(line)
+        #add line to list
+        t.append(line)       
+#getting first 3 values of each county
+for i in range(0,len(t)):
+    if i%6==0 or i%6==1 or i%6==2:
+        my_list.append(t[i])       
+#ignoring total values
+#my_list = my_list[:-3]
+#putting values into tuples
+final_list = [(my_list[i], my_list[i+1], my_list[i+2]) for i in range(0,len(my_list),3)]
+#sort list by democratic voters
+final_list.sort(key = operator.itemgetter(2))
+#print tuples 
+for i in final_list:
+    print str(i[0]) + ' ' + str(i[1]) + ' ' + str(i[2])
+fp.close()
